@@ -25,15 +25,19 @@ import com.aiqrango.domain.repository.RestauranteRepository;
 import com.aiqrango.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 @RestController
 @RequestMapping(value = "/restaurantes")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RestauranteController {
 
     @Autowired
-    private RestauranteRepository restauranteRepository;
+    RestauranteRepository restauranteRepository;
 
     @Autowired
-    private CadastroRestauranteService cadastroRestaurante;
+    CadastroRestauranteService cadastroRestaurante;
 
     @GetMapping
     public List<Restaurante> listar() {

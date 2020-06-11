@@ -30,39 +30,37 @@ public class Pedido {
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    private BigDecimal subtotal;
-    private BigDecimal taxaFrete;
-    private BigDecimal valorTotal;
+    BigDecimal subtotal;
+    BigDecimal taxaFrete;
+    BigDecimal valorTotal;
 
     @Embedded
-    private Endereco enderecoEntrega;
+    Endereco enderecoEntrega;
 
-    private StatusPedido status;
+    StatusPedido status;
 
     @CreationTimestamp
-    private LocalDateTime dataCriacao;
+    LocalDateTime dataCriacao;
 
-    private LocalDateTime dataConfirmacao;
-    private LocalDateTime dataCancelamento;
-    private LocalDateTime dataEntrega;
-
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private FormaPagamento formaPagamento;
+    LocalDateTime dataConfirmacao;
+    LocalDateTime dataCancelamento;
+    LocalDateTime dataEntrega;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Restaurante restaurante;
+    FormaPagamento formaPagamento;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    Restaurante restaurante;
 
     @ManyToOne
     @JoinColumn(name = "usuario_cliente_id", nullable = false)
-    private Usuario cliente;
+    Usuario cliente;
 
     @OneToMany(mappedBy = "pedido")
-    private List<ItemPedido> itens = new ArrayList<>();
-
-
+    List<ItemPedido> itens = new ArrayList<>();
 
 }

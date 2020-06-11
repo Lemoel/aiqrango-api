@@ -8,14 +8,18 @@ import com.aiqrango.domain.model.Cozinha;
 import com.aiqrango.domain.model.Restaurante;
 import com.aiqrango.domain.repository.RestauranteRepository;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CadastroRestauranteService {
 
 	@Autowired
-	private RestauranteRepository restauranteRepository;
+	RestauranteRepository restauranteRepository;
 
 	@Autowired
-	private CadastroCozinhaService cadastroCozinhaService;
+	CadastroCozinhaService cadastroCozinhaService;
 	
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();

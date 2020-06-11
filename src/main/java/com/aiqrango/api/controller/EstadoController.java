@@ -19,15 +19,19 @@ import com.aiqrango.domain.model.Estado;
 import com.aiqrango.domain.repository.EstadoRepository;
 import com.aiqrango.domain.service.CadastroEstadoService;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 @RestController
 @RequestMapping("/estados")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EstadoController {
 
     @Autowired
-    private EstadoRepository estadoRepository;
+    EstadoRepository estadoRepository;
 
     @Autowired
-    private CadastroEstadoService cadastroEstado;
+    CadastroEstadoService cadastroEstado;
 
     @GetMapping
     public List<Estado> listar() {

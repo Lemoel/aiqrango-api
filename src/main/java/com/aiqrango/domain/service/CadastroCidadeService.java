@@ -11,14 +11,18 @@ import com.aiqrango.domain.model.Cidade;
 import com.aiqrango.domain.model.Estado;
 import com.aiqrango.domain.repository.CidadeRepository;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CadastroCidadeService {
 
 	@Autowired
-	private CidadeRepository cidadeRepository;
+	CidadeRepository cidadeRepository;
 
 	@Autowired
-	private CadastroEstadoService cadastroEstadoService;
+	CadastroEstadoService cadastroEstadoService;
 
 	public static final String MSG_CIDADE_EM_USO = "Cidade de código %d não pode ser removida, pois está em uso";
 

@@ -10,13 +10,17 @@ import com.aiqrango.domain.exception.EntidadeEmUsoException;
 import com.aiqrango.domain.model.Cozinha;
 import com.aiqrango.domain.repository.CozinhaRepository;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CadastroCozinhaService {
 
     public static final String MSG_COZINHA_EM_USO = "Cozinha de código %d não pode ser removida, pois está em uso";
 
     @Autowired
-    private CozinhaRepository cozinhaRepository;
+    CozinhaRepository cozinhaRepository;
 
     public Cozinha salvar(Cozinha cozinha) {
         return cozinhaRepository.save(cozinha);

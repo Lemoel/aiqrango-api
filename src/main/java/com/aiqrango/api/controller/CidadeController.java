@@ -21,15 +21,19 @@ import com.aiqrango.domain.model.Cidade;
 import com.aiqrango.domain.repository.CidadeRepository;
 import com.aiqrango.domain.service.CadastroCidadeService;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 @RestController
 @RequestMapping(value = "/cidades")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CidadeController {
 
     @Autowired
-    private CidadeRepository cidadeRepository;
+    CidadeRepository cidadeRepository;
 
     @Autowired
-    private CadastroCidadeService cadastroCidade;
+    CadastroCidadeService cadastroCidade;
 
     @GetMapping
     public List<Cidade> listar() {

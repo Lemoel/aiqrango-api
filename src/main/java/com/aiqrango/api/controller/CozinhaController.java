@@ -19,15 +19,19 @@ import com.aiqrango.domain.model.Cozinha;
 import com.aiqrango.domain.repository.CozinhaRepository;
 import com.aiqrango.domain.service.CadastroCozinhaService;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 @RestController
 @RequestMapping(value = "/cozinhas")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CozinhaController {
 
     @Autowired
-    private CozinhaRepository cozinhaRepository;
+    CozinhaRepository cozinhaRepository;
 
     @Autowired
-    private CadastroCozinhaService cadastroCozinha;
+    CadastroCozinhaService cadastroCozinha;
 
     @GetMapping
     public List<Cozinha> listar() {
