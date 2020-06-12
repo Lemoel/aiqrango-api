@@ -1,5 +1,8 @@
 package com.aiqrango.api.exceptionhandler;
 
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.aiqrango.domain.exception.EntidadeEmUsoException;
 import com.aiqrango.domain.exception.EntidadeNaoEncontradaException;
 import com.aiqrango.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -21,10 +26,32 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
+        Throwable rootCause = ExceptionUtils.getRootCause(e);
+
+        if (rootCause instanceof InvalidFormatException) {
+            return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+        }
+
         ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
         String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe";
         ApiErrorMessage apiErrorMessage = createApiErrorMessageBuilder(status, problemType, detail).build();
         return handleExceptionInternal(e, apiErrorMessage, new HttpHeaders(), status, request);
+    }
+
+    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException e,
+                                                                HttpHeaders headers,
+                                                                HttpStatus status,
+                                                                WebRequest request) {
+
+        String path = e.getPath().stream()
+                .map(JsonMappingException.Reference::getFieldName)
+                .collect(Collectors.joining("."));
+
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = String.format("A propriedade '%s' recebeu o valor '%s', que é de um tipo inválido." +
+                " Corrija e informe um valor compatível com o tipo %s.", path, e.getValue(), e.getTargetType().getSimpleName());
+        ApiErrorMessage apiErrorMessage = createApiErrorMessageBuilder(status, problemType, detail).build();
+        return handleExceptionInternal(e, apiErrorMessage, headers, status, request);
     }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
@@ -84,4 +111,5 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .title(problemType.getTitle())
                 .detail(detail);
     }
+
 }
