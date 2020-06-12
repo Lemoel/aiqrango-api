@@ -3,6 +3,7 @@ package com.aiqrango.api.exceptionhandler;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -15,36 +16,49 @@ import com.aiqrango.domain.exception.NegocioException;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe";
+        ApiErrorMessage apiErrorMessage = createApiErrorMessageBuilder(status, problemType, detail).build();
+        return handleExceptionInternal(e, apiErrorMessage, new HttpHeaders(), status, request);
+    }
+
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<Object> handlerEntidadeNaoEncontradaException(EntidadeNaoEncontradaException e,
-                                                                        WebRequest webRequest) {
+                                                                        WebRequest request) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         ProblemType problemType = ProblemType.ENTIDADE_NAO_ENCONTRADA;
         String detail = e.getMessage();
         ApiErrorMessage apiErrorMessage = createApiErrorMessageBuilder(httpStatus, problemType, detail).build();
-        return handleExceptionInternal(e, apiErrorMessage, new HttpHeaders(), httpStatus, webRequest);
+        return handleExceptionInternal(e, apiErrorMessage, new HttpHeaders(), httpStatus, request);
     }
 
     @ExceptionHandler(EntidadeEmUsoException.class)
-    public ResponseEntity<Object> handlerEntidadeEmUsoException(EntidadeEmUsoException e, WebRequest webRequest) {
+    public ResponseEntity<Object> handlerEntidadeEmUsoException(EntidadeEmUsoException e, WebRequest request) {
         HttpStatus httpStatus = HttpStatus.CONFLICT;
         ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
         String detail = e.getMessage();
         ApiErrorMessage apiErrorMessage = createApiErrorMessageBuilder(httpStatus, problemType, detail).build();
-        return handleExceptionInternal(e, apiErrorMessage, new HttpHeaders(), httpStatus, webRequest);
+        return handleExceptionInternal(e, apiErrorMessage, new HttpHeaders(), httpStatus, request);
     }
 
     @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<Object> handlerNegocioException(NegocioException e, WebRequest webRequest) {
+    public ResponseEntity<Object> handlerNegocioException(NegocioException e, WebRequest request) {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         ProblemType problemType = ProblemType.ERRO_NEGOCIO;
         String detail = e.getMessage();
         ApiErrorMessage apiErrorMessage = createApiErrorMessageBuilder(httpStatus, problemType, detail).build();
-        return handleExceptionInternal(e, apiErrorMessage, new HttpHeaders(), httpStatus, webRequest);
+        return handleExceptionInternal(e, apiErrorMessage, new HttpHeaders(), httpStatus, request);
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body,
+                                                             HttpHeaders headers, HttpStatus status,
+                                                             WebRequest request) {
 
         if (body == null) {
             body = ApiErrorMessage.builder()

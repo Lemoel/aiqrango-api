@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ProblemType {
 
+    MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel", "Mensagem incompreensivel"),
     ENTIDADE_NAO_ENCONTRADA("/entidade-nao-encontrada", "Entidade não encontrada"),
     ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
     ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio");
@@ -16,7 +17,7 @@ public enum ProblemType {
     String uri;
 
     ProblemType(String path, String title) {
-        this.uri = "https://www.google.com.br/" + path;
+        this.uri = "https://www.google.com.br" + path;
         this.title = title;
     }
 
